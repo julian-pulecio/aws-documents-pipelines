@@ -1,0 +1,17 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+    "type": "object",
+    "title": "The Root Schema",
+    "required": ["picture"],
+    "properties": {
+        "picture": {
+            "description": "The user's picture",
+            "type": "string",
+            "media": {
+                "binaryEncoding": "base64",
+                "type": "image/png"
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+service: aws-documents-pipelines
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'  # You can specify more specific types like 'image/png', 'application/pdf'
+
+  ecr:
+    scanOnPush: true
+    images:
+      awsdocumentpipelines:
+        path: ./
+        platform: linux/amd64
+
+functions:
+  lambda_handler:
+    timeout: 300 
+    image:
+      name: awsdocumentpipelines
+    events:
+      - http:
+          method: POST
+          path: /image
+          contentHandling: CONVERT_TO_BINARY
