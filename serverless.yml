@@ -24,4 +24,3 @@ functions:
       - http:
           method: POST
           path: /image
-          contentHandling: CONVERT_TO_BINARY

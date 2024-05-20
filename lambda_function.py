@@ -1,16 +1,36 @@
 import json
+import re
 from src.models.b64_file import B64File
 from src.models.vertex_ia import VertexIa
+import base64
+from io import BytesIO
+from multipart import parse_form_data
+
 
 def lambda_handler(event, context):
+    
+    headers = {k.lower():v for k,v in event['headers'].items()}
+    body = base64.b64decode(event['body'])
 
-    b64_file = B64File(b64_str=event['body'])
+    environ = {
+        'CONTENT_TYPE': headers['content-type'],
+        'REQUEST_METHOD': 'POST',
+        'wsgi.input': BytesIO(body)
+    }
+    form, files = parse_form_data(environ)
+
+    # Example usage...
+    form_data = dict(form)
+    print(form_data)
+
+    file = BytesIO(files.get('file').raw)
+
     vertex_ia = VertexIa(project = 'document-processor-417317', location = 'us-central1')
-    mime_type = b64_file.guess_file_mime_type()
+    mime_type = 'image/png'
     result = vertex_ia.upload_request_to_vertex_ia(
-        bytes_file=b64_file.convert_b64_file_to_bytes(),
+        bytes_file=file,
         mime_type=mime_type,
-        prompt='what is in this image?'
+        prompt=form_data['prompt']
     ) 
     
     if not mime_type:
