@@ -31,6 +31,7 @@ pyasn1_modules==0.4.0
 pydantic==2.7.1
 pydantic_core==2.18.2
 python-dateutil==2.9.0.post0
+python-magic==0.4.27
 requests==2.31.0
 returns==0.22.0
 rsa==4.9
