@@ -12,10 +12,10 @@ RUN mkdir ./src
 
 ADD src ./src
 
-COPY lambda_function.py ./
+COPY ./src/handlers/process_document_handler.py ./
 
 COPY document-processor-417317-fd90cd5558b7.json ./
 
 # setting the CMD to your handler file_name.function_name
 
-CMD [ "lambda_function.lambda_handler" ]
+CMD [ "process_document_handler.process_document_handler" ]

@@ -3,10 +3,9 @@ from returns.pointfree import bind
 from src.models.vertex_ia import VertexIa
 from src.models.multipart_parser import MultipartParser
 from src.models.event import Event
-from returns.result import safe, Success
 import json
 
-def lambda_handler(event, context):
+def process_document_handler(event, context):
     event = Event(data=event)
     multipart_parser = MultipartParser()
     vertex_ia = VertexIa(project = 'document-processor-417317', location = 'us-central1')
@@ -23,7 +22,7 @@ def lambda_handler(event, context):
     else:
         status_code = 500
         message = str(result.failure())
-        
+
     return {
         'statusCode': status_code,
         'headers': {

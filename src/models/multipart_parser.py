@@ -1,16 +1,10 @@
-from botocore.exceptions import ClientError
 from multipart import parse_form_data
 from returns.result import safe
 from dataclasses import dataclass
-from base64 import b64decode
 from io import BytesIO
-
-from returns.result import Success
-from returns.pipeline import flow, is_successful
-from returns.pointfree import bind
+from src.models.event import Event
 import magic
 
-from src.models.event import Event
 
 @dataclass
 class MultipartParser:   
