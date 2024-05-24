@@ -1,28 +1,36 @@
 from returns.pipeline import flow, is_successful
 from returns.pointfree import bind
-from src.models.b64_file import B64File
 from src.models.vertex_ia import VertexIa
 from src.models.multipart_parser import MultipartParser
-from returns.result import safe
+from src.models.event import Event
+from returns.result import safe, Success
 import json
 
 def lambda_handler(event, context):
-    multipart_parser = MultipartParser(event=event)
+    event = Event(data=event)
+    multipart_parser = MultipartParser()
     vertex_ia = VertexIa(project = 'document-processor-417317', location = 'us-central1')
 
     result = flow(
-        multipart_parser.extract_event_data(),
-        bind(lambda _:vertex_ia.upload_request_to_vertex_ia(multipart_parser)), 
+        event.format_event(),
+        bind(multipart_parser.extract_event_data),
+        bind(vertex_ia.upload_request_to_vertex_ia)
     )
-    print(result)
-    print(multipart_parser.mime_type)
+    
+    if is_successful(result):
+        status_code = 200
+        message = result.unwrap()
+    else:
+        status_code = 500
+        message = str(result.failure())
+        
     return {
-        'statusCode': 200,
+        'statusCode': status_code,
         'headers': {
             'Content-Type': 'application/json'
         },
         'body': json.dumps( 
-            {'message': result.unwrap()}
+            {'message': message}
         )
     }
     

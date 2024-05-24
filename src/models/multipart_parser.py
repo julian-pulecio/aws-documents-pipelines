@@ -10,50 +10,39 @@ from returns.pipeline import flow, is_successful
 from returns.pointfree import bind
 import magic
 
+from src.models.event import Event
 
 @dataclass
-class MultipartParser:
-    event: dict
-
+class MultipartParser:   
     @safe
-    def extract_event_data(self):
-        result = flow(
-            self.__init_headers(),
-            bind(lambda _: self.__init_body()),
-            bind(lambda _: self.__init_data()),
-        )
-        if not is_successful(result):
-            raise Exception(str(result.failure()))
-        
-        return self
-   
-    @safe
-    def __init_headers(self):
-        if 'headers' not in self.event:
-            raise Exception('not headers found in the event')
-        self.headers = {k.lower():v for k,v in self.event['headers'].items()}
-
-        return True
-    
-    @safe
-    def __init_body(self):
-        if 'body' not in self.event:
-            raise Exception('not body found in the event')
-        self.body = BytesIO(b64decode(self.event['body']))
-        
-        return True
-    
-    @safe
-    def __init_data(self):
+    def extract_event_data(self, event:Event):
         form, files = parse_form_data({
-            'CONTENT_TYPE': self.headers['content-type'],
+            'CONTENT_TYPE': event.headers['content-type'],
             'REQUEST_METHOD': 'POST',
-            'wsgi.input': self.body
+            'wsgi.input': event.body
         })
-        self.form = dict(form)
+        
         if 'file' not in files:
             raise Exception('not file found in the event')
-        self.files = BytesIO(files.get('file').raw)
-        self.mime_type = magic.Magic(mime=True).from_buffer(self.files.getvalue())
         
-        return True
+        file_data = BytesIO(files.get('file').raw)
+        
+        multipart_data = MultiPartData(
+            file = MultiPartFile(
+                file_data = file_data,
+                mime_type = magic.Magic(mime=True).from_buffer(file_data.getvalue())
+            ),
+            form = dict(form)
+        )
+        
+        return multipart_data
+
+@dataclass
+class MultiPartFile:
+    file_data: BytesIO
+    mime_type: str    
+
+@dataclass
+class MultiPartData:
+    file: MultiPartFile
+    form: dict
