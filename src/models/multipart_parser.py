@@ -3,13 +3,23 @@ from returns.result import safe
 from dataclasses import dataclass
 from io import BytesIO
 from src.models.event import Event
+from src.models.multipart_parser import MultiPartData
 import magic
 
+@dataclass
+class MultiPartFile:
+    file_data: BytesIO
+    mime_type: str    
+
+@dataclass
+class MultiPartData:
+    file: MultiPartFile
+    form: dict
 
 @dataclass
 class MultipartParser:   
     @safe
-    def extract_event_data(self, event:Event):
+    def extract_event_data(self, event:Event) -> MultiPartData:
         form, files = parse_form_data({
             'CONTENT_TYPE': event.headers['content-type'],
             'REQUEST_METHOD': 'POST',
@@ -30,13 +40,3 @@ class MultipartParser:
         )
         
         return multipart_data
-
-@dataclass
-class MultiPartFile:
-    file_data: BytesIO
-    mime_type: str    
-
-@dataclass
-class MultiPartData:
-    file: MultiPartFile
-    form: dict
