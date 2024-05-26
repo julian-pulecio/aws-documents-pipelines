@@ -4,7 +4,7 @@ from base64 import b64decode
 from io import BytesIO
 from returns.pipeline import flow, is_successful
 from returns.pointfree import bind
-
+from src.exceptions.bad_request_exception import BadRequestException
 
 @dataclass
 class Event:
@@ -25,7 +25,7 @@ class Event:
     @safe
     def __init_headers(self):
         if 'headers' not in self.data:
-            raise Exception('not headers found in the event')
+            raise BadRequestException('not headers found in the event')
         self.headers = {k.lower():v for k,v in self.data['headers'].items()}
 
         return self
@@ -33,7 +33,7 @@ class Event:
     @safe
     def __init_body(self):
         if 'body' not in self.data:
-            raise Exception('not body found in the event')
+            raise BadRequestException('not body found in the event')
         self.body = BytesIO(b64decode(self.data['body']))
         
         return self

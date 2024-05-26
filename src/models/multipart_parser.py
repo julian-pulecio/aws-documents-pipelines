@@ -3,7 +3,7 @@ from returns.result import safe
 from dataclasses import dataclass
 from io import BytesIO
 from src.models.event import Event
-from src.models.multipart_parser import MultiPartData
+from src.exceptions.bad_request_exception import BadRequestException
 import magic
 
 @dataclass
@@ -27,7 +27,7 @@ class MultipartParser:
         })
         
         if 'file' not in files:
-            raise Exception('not file found in the event')
+            raise BadRequestException('not file found in the event')
         
         file_data = BytesIO(files.get('file').raw)
         
