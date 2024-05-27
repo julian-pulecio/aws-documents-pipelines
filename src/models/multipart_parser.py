@@ -1,4 +1,5 @@
 from multipart import parse_form_data
+from multipart import MultiDict
 from returns.result import safe
 from dataclasses import dataclass
 from io import BytesIO
@@ -29,7 +30,7 @@ class MultipartParser:
         if 'file' not in files:
             raise BadRequestException('not file found in the event')
         
-        file_data = BytesIO(files.get('file').raw)
+        file_data:BytesIO = BytesIO(files.get('file').raw)
         
         multipart_data = MultiPartData(
             file = MultiPartFile(
