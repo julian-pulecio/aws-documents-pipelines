@@ -36,6 +36,6 @@ class Event:
     def __init_body(self) -> Self:
         if 'body' not in self.data:
             raise BadRequestException('not body found in the event')
-        self.body:dict = BytesIO(b64decode(self.data['body']))
+        self.body:BytesIO = BytesIO(b64decode(self.data['body']))
         
         return self

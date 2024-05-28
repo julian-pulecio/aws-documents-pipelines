@@ -1,5 +1,4 @@
 from multipart import parse_form_data
-from multipart import MultiDict
 from returns.result import safe
 from dataclasses import dataclass
 from io import BytesIO

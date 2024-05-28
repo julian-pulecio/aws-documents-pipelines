@@ -1,10 +1,10 @@
-from returns.result import Success, Failure
+from returns.result import Success, Failure, Any, Result
 from returns.pipeline import is_successful
 from typing import Union, Tuple
 import json
 
 
-def generate_response(result: Union[Success, Failure]) -> dict:
+def generate_response(result: Result) -> dict:
 
     if is_successful(result):
         status_code, message = handle_success(result)
@@ -21,10 +21,10 @@ def generate_response(result: Union[Success, Failure]) -> dict:
         )
     }
 
-def handle_success(result: Success) -> Tuple[int, str]:
+def handle_success(result:Result) -> Tuple[int, str]:
     return 200, result.unwrap()
 
-def handle_failure(result: Failure) -> Tuple[int, str]:
+def handle_failure(result:Result) -> Tuple[int, str]:
     error_dict = json.loads(str(result.failure()).replace("'", "\""))
     if 'error_code' not in error_dict:
         return 500, error_dict['message']

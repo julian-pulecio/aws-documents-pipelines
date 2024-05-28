@@ -5,9 +5,9 @@ from vertexai.generative_models import GenerativeModel
 from vertexai.generative_models import GenerationResponse
 from google.oauth2.service_account import Credentials
 from google.auth.transport.requests import Request
-from returns.result import safe
-from typing import Union, Iterable
+from typing import Union, Iterable, Optional
 from dataclasses import dataclass
+from returns.result import safe
 from src.models.multipart_parser import MultiPartData
 
 
@@ -15,9 +15,6 @@ from src.models.multipart_parser import MultiPartData
 class VertexIa:
     project:str
     location:str
-    credentials:Credentials = None
-    safety_settings:dict = None
-    generation_config:dict = None
 
 
     def __post_init__(self) -> None:

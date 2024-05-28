@@ -6,8 +6,8 @@ from src.models.vertex_ia import VertexIa
 from src.models.multipart_parser import MultipartParser
 from src.models.event import Event
 
-def process_document_handler(event:dict, context:dict):
-    event:Event = Event(data=event)
+def process_document_handler(event_dict:dict, context:dict):
+    event:Event = Event(data=event_dict)
     multipart_parser:MultipartParser = MultipartParser()
     vertex_ia:VertexIa = VertexIa(project = 'document-processor-417317', location = 'us-central1')
 
