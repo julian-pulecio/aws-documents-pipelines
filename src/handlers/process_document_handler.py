@@ -5,6 +5,8 @@ from src.utils.generate_response import generate_response
 from src.models.vertex_ia import VertexIa
 from src.models.multipart_parser import MultipartParser
 from src.models.event import Event
+import base64
+
 
 def process_document_handler(event_dict:dict, context:dict):
     event:Event = Event(data=event_dict)

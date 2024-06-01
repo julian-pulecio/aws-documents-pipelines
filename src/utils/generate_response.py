@@ -27,5 +27,5 @@ def handle_success(result:Result) -> Tuple[int, str]:
 def handle_failure(result:Result) -> Tuple[int, str]:
     error_dict = json.loads(str(result.failure()).replace("'", "\""))
     if 'error_code' not in error_dict:
-        return 500, error_dict['message']
+        return 500, str(result.failure())
     return error_dict['error_code'], error_dict['message']

@@ -14,10 +14,11 @@ class MultiPartFile:
 @dataclass
 class MultiPartData:
     file: MultiPartFile
-    form: dict
+    prompt: str
 
 @dataclass
-class MultipartParser:   
+class MultipartParser:
+       
     @safe
     def extract_event_data(self, event:Event) -> MultiPartData:
         form, files = parse_form_data({
@@ -27,7 +28,10 @@ class MultipartParser:
         })
         
         if 'file' not in files:
-            raise BadRequestException('not file found in the event')
+            raise BadRequestException('file not found in the event')
+        
+        if 'prompt' not in form:
+            raise BadRequestException('prompt not found in the event')
         
         file_data:BytesIO = BytesIO(files.get('file').raw)
         
@@ -36,7 +40,7 @@ class MultipartParser:
                 file_data = file_data,
                 mime_type = magic.Magic(mime=True).from_buffer(file_data.getvalue())
             ),
-            form = dict(form)
+            prompt = form.get('prompt')
         )
         
         return multipart_data

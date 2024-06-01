@@ -54,7 +54,7 @@ class VertexIa:
 
         model:GenerativeModel = GenerativeModel("gemini-1.5-pro-preview-0409")
         responses:Union[GenerationResponse, Iterable[GenerationResponse]] = model.generate_content(
-            [file, multipart_data.form['prompt']],
+            [file, multipart_data.prompt],
             generation_config=self.generation_config,
             safety_settings=self.safety_settings,
             stream=True,
